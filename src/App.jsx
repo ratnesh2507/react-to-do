@@ -14,8 +14,16 @@ export default function App() {
       setTasks([...tasks, newTask]);
     }
   }
-  function handleDeleteTask() {}
-  function toggleComplete() {}
+  function handleDeleteTask(id) {
+    setTasks(tasks.filter((task) => task.id !== id));
+  }
+  function toggleComplete(id) {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  }
 
   return (
     <div className="container py-5">
