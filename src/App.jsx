@@ -1,8 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import InputBox from "./components/InputBox";
 import TaskList from "./components/TaskList";
+import ThemeToggle from "./components/ThemeToggle";
+
 export default function App() {
   const [tasks, setTasks] = useState([]);
+  const [darkMode, setDarkMode] = useState(false);
+
+  //save theme preference to local storage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("darkMode");
+    if (savedTheme) {
+      setDarkMode(JSON.parse(savedTheme));
+    }
+  }, []);
+
+  //applying theme
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("bg-dark", "text-light");
+    } else {
+      document.body.classList.remove("bg-dark", "text-light");
+    }
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+  }, [darkMode]);
 
   function handleAddTask(text) {
     if (text.trim() !== "") {
@@ -25,26 +46,50 @@ export default function App() {
     );
   }
 
+  function toggleTheme() {
+    setDarkMode(!darkMode);
+  }
+
+  const headerStyle = {
+    backgroundColor: darkMode ? "#d45802" : "#fc6a03",
+    transition: "background-color 0.3s ease",
+  };
+
   return (
-    <div className="container py-5">
+    <div
+      className={`container py-5 ${darkMode ? "dark-theme" : "light-theme"}`}
+    >
       <div className="row justify-content-center">
         <div className="col-md-8">
-          <div className="card shadow">
-            <div className="card-header bg-primary text-white">
-              <h1 className="h4 mb-0">Todo List</h1>
+          <div
+            className={`card shadow ${
+              darkMode ? "bg-dark text-light border-secondary" : ""
+            }`}
+          >
+            <div
+              className="card-header d-flex justify-content-between align-items-center"
+              style={headerStyle}
+            >
+              <h1 className="h4 mb-0 text-white">Todo List</h1>
+              <ThemeToggle darkMode={darkMode} toggleTheme={toggleTheme} />
             </div>
 
-            <div className="card-body">
-              <InputBox onAddTask={handleAddTask} />
+            <div className={`card-body ${darkMode ? "bg-dark" : ""}`}>
+              <InputBox onAddTask={handleAddTask} darkMode={darkMode} />
 
               <TaskList
                 tasks={tasks}
                 onToggleComplete={toggleComplete}
                 onDeleteTask={handleDeleteTask}
+                darkMode={darkMode}
               />
 
               {tasks.length > 0 && (
-                <div className="card bg-light mt-3">
+                <div
+                  className={`card mt-3 ${
+                    darkMode ? "bg-secondary text-light" : "bg-light"
+                  }`}
+                >
                   <div className="card-body p-2">
                     <div className="row text-center">
                       <div className="col">
@@ -61,7 +106,13 @@ export default function App() {
                       </div>
                       <div className="col">
                         <h6>Remaining</h6>
-                        <span className="badge bg-warning text-dark">
+                        <span
+                          className={`badge ${
+                            darkMode
+                              ? "bg-warning text-dark"
+                              : "bg-warning text-dark"
+                          }`}
+                        >
                           {tasks.filter((task) => !task.completed).length}
                         </span>
                       </div>

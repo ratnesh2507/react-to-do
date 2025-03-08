@@ -1,6 +1,10 @@
-function Task({ task, onToggleComplete, onDeleteTask }) {
+function Task({ task, onToggleComplete, onDeleteTask, darkMode }) {
   return (
-    <li className="list-group-item d-flex justify-content-between align-items-center">
+    <li
+      className={`list-group-item d-flex justify-content-between align-items-center 
+      ${darkMode ? "bg-dark text-light border-secondary" : ""}`}
+      style={{ transition: "background-color 0.3s ease, color 0.3s ease" }}
+    >
       <div className="form-check">
         <input
           type="checkbox"
