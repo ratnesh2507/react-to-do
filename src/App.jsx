@@ -4,7 +4,16 @@ import TaskList from "./components/TaskList";
 export default function App() {
   const [tasks, setTasks] = useState([]);
 
-  function handleAddTask() {}
+  function handleAddTask(text) {
+    if (text.trim() !== "") {
+      const newTask = {
+        id: Date.now(),
+        text: text,
+        completed: false,
+      };
+      setTasks([...tasks, newTask]);
+    }
+  }
   function handleDeleteTask() {}
   function toggleComplete() {}
 
